@@ -187,4 +187,28 @@ mod tests {
         let pres = present(both, [x, y]);
         assert_eq!(vec![vec![Term::Int(1), Term::Int(1)]], pres);
     }
+
+    #[test]
+    fn inconsistent_assignment() {
+        use Goal::*;
+        let x = LVar::new(0);
+        let goal = Both(
+            Box::new(Equal(Term::Var(x), Term::Int(1))),
+            Box::new(Equal(Term::Var(x), Term::Int(2))),
+        );
+        assert_eq!(Vec::<Vec<Term>>::new(), present(goal, [x]));
+    }
+
+    #[test]
+    fn either_value() {
+        use Goal::*;
+        let x = LVar::new(0);
+        let eq1 = Equal(Term::Var(x), Term::Int(1));
+        let eq2 = Equal(Term::Var(x), Term::Int(2));
+        let goal = Either(Box::new(eq1), Box::new(eq2));
+        assert_eq!(
+            vec![vec![Term::Int(1)], vec![Term::Int(2)]],
+            present(goal, [x])
+        );
+    }
 }
