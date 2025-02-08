@@ -34,6 +34,18 @@ enum Goal {
     Either(Box<Goal>, Box<Goal>),
 }
 
+fn equal(t1: Term, t2: Term) -> Goal {
+    Goal::Equal(t1, t2)
+}
+
+fn both(g1: Goal, g2: Goal) -> Goal {
+    Goal::Both(Box::new(g1), Box::new(g2))
+}
+
+fn either(g1: Goal, g2: Goal) -> Goal {
+    Goal::Either(Box::new(g1), Box::new(g2))
+}
+
 fn interpret(goal: Goal, sub: Sub) -> Vec<Sub> {
     match goal {
         Goal::Equal(t1, t2) => match unify(t1, t2, &mut sub.clone()) {
@@ -209,6 +221,29 @@ mod tests {
         assert_eq!(
             vec![vec![Term::Int(1)], vec![Term::Int(2)]],
             present(goal, [x])
+        );
+    }
+
+    #[test]
+    fn goal_shorthand_funcs() {
+        let x = LVar::new(0);
+        let y = LVar::new(1);
+        let goal = either(
+            equal(
+                Term::list_from([Term::Var(x), Term::Var(y)]),
+                Term::list_from([Term::Int(1), Term::Int(2)]),
+            ),
+            equal(
+                Term::list_from([Term::Var(y), Term::Var(x)]),
+                Term::list_from([Term::Int(3), Term::Int(4)]),
+            ),
+        );
+        assert_eq!(
+            vec![
+                vec![Term::Int(1), Term::Int(2)],
+                vec![Term::Int(4), Term::Int(3)]
+            ],
+            present(goal, [x, y])
         );
     }
 }
