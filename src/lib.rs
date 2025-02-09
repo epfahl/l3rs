@@ -79,6 +79,8 @@ fn walk(term: Term, sub: &Sub) -> Term {
     }
 }
 
+// TODO: Can this work for any type that implements equality (Eq, PartialEq??)?
+// What about matching on vectors (see slice patterns)?
 fn unify(term1: Term, term2: Term, sub: &mut Sub) -> Option<&mut Sub> {
     let wterm1 = walk(term1, sub);
     let wterm2 = walk(term2, sub);
