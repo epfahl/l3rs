@@ -228,23 +228,21 @@ mod tests {
 
     #[test]
     fn goal_shorthand_funcs() {
+        use Term::*;
         let x = LVar::new(0);
         let y = LVar::new(1);
         let goal = either(
             equal(
-                Term::list_from([Term::Var(x), Term::Var(y)]),
-                Term::list_from([Term::Int(1), Term::Int(2)]),
+                Term::list_from([Var(x), Var(y)]),
+                Term::list_from([Int(1), Int(2)]),
             ),
             equal(
-                Term::list_from([Term::Var(y), Term::Var(x)]),
-                Term::list_from([Term::Int(3), Term::Int(4)]),
+                Term::list_from([Var(y), Var(x)]),
+                Term::list_from([Int(3), Int(4)]),
             ),
         );
         assert_eq!(
-            vec![
-                vec![Term::Int(1), Term::Int(2)],
-                vec![Term::Int(4), Term::Int(3)]
-            ],
+            vec![vec![Int(1), Int(2)], vec![Int(4), Int(3)]],
             present(goal, [x, y])
         );
     }
